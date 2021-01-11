@@ -11,7 +11,6 @@ export default class FeaturedRooms extends Component {
         rooms = rooms.map(room => {
             return <Room key={room.id} room={room} />
         })
-        console.log(rooms);
                 return(
                     <section className="featured-rooms">
                         <Title title="featured rooms" />
