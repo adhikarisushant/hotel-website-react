@@ -1,10 +1,15 @@
 import React from 'react'
+import Hero from "../components/Hero";
+import Banner from '../components/Banner'
+import {Link} from 'react-router-dom'
 
 const Home = () => {
     return (
-        <div>
-            Hello from homepage
-        </div>
+        <Hero>
+            <Banner title="luxurious rooms" subtitle="deluxe rooms starting at $229">
+                <Link to="/rooms" className="btn-primary">Our rooms</Link>
+            </Banner>
+        </Hero>
     )
 }
 
