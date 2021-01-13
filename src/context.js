@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
-import items from './data'
+// import items from './data'
+import Client from './Contentful'
+
 
 const RoomContext = React.createContext()
 
@@ -21,10 +23,12 @@ class RoomProvider extends Component {
 
     };
     // getData
-
-    componentDidMount() {
-        // get data
-        let rooms = this.formatData(items)
+    getData = async () => {
+        try {
+            let response = await Client.getEntries({
+                content_type: "hotelWebsite"
+            });
+        let rooms = this.formatData(response.items)
         let featuredRooms = rooms.filter(room => room.featured === true);
         let maxPrice = Math.max(...rooms.map(item => item.price));
         let maxSize = Math.max(...rooms.map(item => item.size));
@@ -38,6 +42,13 @@ class RoomProvider extends Component {
             maxPrice,
             maxSize
         })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    componentDidMount() {
+       this.getData()
     }
 
     formatData(items) {
@@ -59,7 +70,7 @@ class RoomProvider extends Component {
 
     handleChange = event => {
         const target = event.target
-        const value = event.type === 'checkbox' ? target.checked:target.value
+        const value = target.type === 'checkbox' ? target.checked:target.value
         const name = event.target.name;
         this.setState({
             [name]: value
@@ -88,7 +99,17 @@ class RoomProvider extends Component {
         }
         // Filter by price
         tempRooms = tempRooms.filter(room => room.price <= price);
-        
+
+        // filter by size
+        tempRooms = tempRooms.filter(room => room.size >= minSize && room.size <= maxSize)
+        // filter by breakfast
+        if(breakfast) {
+            tempRooms = tempRooms.filter(room => room.breakfast === true)
+        }
+        // filter by pets
+        if(pets) {
+            tempRooms = tempRooms.filter(room => room.pets === true)
+        }
         // Change state
         this.setState({
             sortedRooms: tempRooms
